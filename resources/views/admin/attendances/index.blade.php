@@ -33,6 +33,7 @@
                         <th class="px-5 py-3.5 text-center">Sakit</th>
                         <th class="px-5 py-3.5 text-center">Tidak Hadir</th>
                         <th class="px-5 py-3.5 text-center">Total</th>
+                        <th class="px-5 py-3.5">Catatan Singkat</th>
                         <th class="px-5 py-3.5 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -45,24 +46,43 @@
                             $sakit = $atts->where('status','sakit')->count();
                             $alpa  = $atts->where('status','alpa')->count();
                             $total = $atts->count();
+                            $studentNotes = $atts->filter(fn($a) => !empty($a->notes));
                         @endphp
                         <tr class="hover:bg-slate-50/50">
-                            <td class="px-5 py-4 font-bold text-slate-900">{{ $meeting->meeting_date->format('d F Y') }}</td>
-                            <td class="px-5 py-4 text-slate-600">{{ $meeting->schedule->session_name ?? '-' }}</td>
-                            <td class="px-5 py-4 text-center">
+                            <td class="px-5 py-4 align-top">
+                                <div class="font-bold text-slate-900">{{ \Carbon\Carbon::parse($meeting->meeting_date)->locale('id')->translatedFormat('d F Y') }}</div>
+                            </td>
+                            <td class="px-5 py-4 align-top">
+                                <div class="font-semibold text-slate-700">{{ $meeting->schedule->session_name ?? '-' }}</div>
+                            </td>
+                            <td class="px-5 py-4 align-top text-center">
                                 <span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-black">{{ $hadir }}</span>
                             </td>
-                            <td class="px-5 py-4 text-center">
+                            <td class="px-5 py-4 align-top text-center">
                                 <span class="px-2.5 py-1 rounded-lg bg-sky-100 text-sky-700 text-xs font-black">{{ $izin }}</span>
                             </td>
-                            <td class="px-5 py-4 text-center">
+                            <td class="px-5 py-4 align-top text-center">
                                 <span class="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-700 text-xs font-black">{{ $sakit }}</span>
                             </td>
-                            <td class="px-5 py-4 text-center">
+                            <td class="px-5 py-4 align-top text-center">
                                 <span class="px-2.5 py-1 rounded-lg bg-rose-100 text-rose-700 text-xs font-black">{{ $alpa }}</span>
                             </td>
-                            <td class="px-5 py-4 text-center text-slate-700 font-bold">{{ $total }} murid</td>
-                            <td class="px-5 py-4 text-center">
+                            <td class="px-5 py-4 align-top text-center text-slate-700 font-bold">{{ $total }} murid</td>
+                            <td class="px-5 py-4 align-top text-slate-600">
+                                @if($studentNotes->isNotEmpty() || !empty($meeting->notes))
+                                    <div class="space-y-1">
+                                        @if(!empty($meeting->notes))
+                                            <div>{{ $meeting->notes }}</div>
+                                        @endif
+                                        @foreach($studentNotes as $sn)
+                                            <div>{{ $sn->notes }}</div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-slate-300">-</span>
+                                @endif
+                            </td>
+                            <td class="px-5 py-4 align-top text-center">
                                 <div class="flex items-center justify-center gap-2">
                                     <a href="{{ route('admin.absensi.create') }}?schedule_id={{ $meeting->schedule_id }}&date={{ $meeting->meeting_date->format('Y-m-d') }}" class="w-8 h-8 rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 flex items-center justify-center" title="Edit Absensi">
                                         <i class="fa-solid fa-pen text-xs"></i>
@@ -77,7 +97,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr><td colspan="8" class="px-5 py-12 text-center text-slate-400 text-sm">Belum ada data absensi pertemuan.</td></tr>
+                        <tr><td colspan="9" class="px-5 py-12 text-center text-slate-400 text-sm">Belum ada data absensi pertemuan.</td></tr>
                     @endforelse
                 </tbody>
             </table>

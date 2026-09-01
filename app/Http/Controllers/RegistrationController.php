@@ -91,7 +91,7 @@ class RegistrationController extends Controller
         $registration = null;
 
         if ($searchCode) {
-            $registration = Registration::with(['student', 'parent', 'schedule', 'payments'])
+            $registration = Registration::with(['student.progressReports.creator', 'parent', 'schedule', 'payments'])
                 ->where('registration_code', trim($searchCode))
                 ->orWhereHas('parent', function($q) use ($searchCode) {
                     $q->where('whatsapp_number', trim($searchCode));

@@ -104,4 +104,9 @@ class ProgressReportController extends Controller
 
         return view('admin.progress_reports.pdf', compact('report', 'settings'));
     }
+
+    public function publicPdf($id)
+    {
+        return $this->downloadPdf($id);
+    }
 }

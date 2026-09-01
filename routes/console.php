@@ -30,5 +30,10 @@ Artisan::command('db:check', function () {
         $studentName = $p->registration && $p->registration->student ? $p->registration->student->full_name : 'No Student';
         $this->line(" - ID: {$p->id} | Murid: {$studentName} | {$p->notes} | Rp " . number_format($p->amount, 0, ',', '.') . " | Status: {$p->status} | Metode: {$p->method}");
     }
+    $this->info('Total Progress Reports in DB: ' . \App\Models\ProgressReport::count());
+    foreach (\App\Models\ProgressReport::with('student')->get() as $r) {
+        $studentName = $r->student ? $r->student->full_name : 'No Student';
+        $this->line(" - Report ID: {$r->id} | Murid: {$studentName} | Periode: {$r->report_period}");
+    }
 });
 

@@ -324,6 +324,89 @@
 
                         </div>
 
+                        {{-- Laporan Perkembangan Belajar Murid --}}
+                        @php
+                            $reports = $registration->student ? $registration->student->progressReports->sortByDesc('created_at') : collect();
+                        @endphp
+                        <div class="p-6 rounded-3xl bg-slate-50 border border-slate-200/80 space-y-5">
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-4 border-b border-slate-200">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center font-bold text-base shadow-sm">
+                                        <i class="fa-solid fa-graduation-cap"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-900 text-base">Laporan Perkembangan Belajar Murid</h3>
+                                        <p class="text-xs text-slate-500">Evaluasi membaca, menulis, dan perkembangan ananda selama bimbingan belajar</p>
+                                    </div>
+                                </div>
+                                @if($reports->isNotEmpty())
+                                    <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">
+                                        {{ $reports->count() }} Laporan Tersedia
+                                    </span>
+                                @endif
+                            </div>
+
+                            @if($reports->isNotEmpty())
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    @foreach($reports as $rpt)
+                                        <div class="p-5 rounded-2xl border border-slate-200 bg-white shadow-sm flex flex-col justify-between space-y-4 hover:border-amber-300 transition-all">
+                                            <div class="space-y-3">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="px-2.5 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold">
+                                                        <i class="fa-solid fa-calendar-check mr-1"></i> Periode: {{ $rpt->report_period ?: \Carbon\Carbon::parse($rpt->created_at)->locale('id')->translatedFormat('F Y') }}
+                                                    </span>
+                                                    <span class="text-[11px] text-slate-400 font-medium">
+                                                        {{ \Carbon\Carbon::parse($rpt->created_at)->locale('id')->translatedFormat('d M Y') }}
+                                                    </span>
+                                                </div>
+
+                                                <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+                                                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Mengenal Huruf</span>
+                                                        <span class="font-bold text-slate-800 capitalize">{{ str_replace('_', ' ', $rpt->letter_recognition) }}</span>
+                                                    </div>
+                                                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Membaca Kata</span>
+                                                        <span class="font-bold text-slate-800 capitalize">{{ str_replace('_', ' ', $rpt->word_reading) }}</span>
+                                                    </div>
+                                                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Menulis & Motorik</span>
+                                                        <span class="font-bold text-slate-800 capitalize">{{ str_replace('_', ' ', $rpt->writing_motoric) }}</span>
+                                                    </div>
+                                                    <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                        <span class="text-slate-400 block text-[10px] uppercase font-bold">Keaktifan / Sikap</span>
+                                                        <span class="font-bold text-slate-800 capitalize">{{ str_replace('_', ' ', $rpt->behavior_attitude) }}</span>
+                                                    </div>
+                                                </div>
+
+                                                @if($rpt->progress_narrative)
+                                                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                                        <span class="text-[10px] uppercase font-bold text-slate-400 block mb-1">Catatan Evaluasi:</span>
+                                                        <p class="text-xs text-slate-700 leading-relaxed italic">
+                                                            "{{ Str::limit($rpt->progress_narrative, 140) }}"
+                                                        </p>
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="pt-2">
+                                                <a href="{{ route('laporan.public-pdf', $rpt->id) }}" target="_blank" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition-all">
+                                                    <i class="fa-solid fa-file-pdf"></i>
+                                                    <span>Lihat & Unduh Laporan PDF</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <div class="p-8 text-center text-slate-400 bg-white rounded-2xl border border-dashed border-slate-200">
+                                    <i class="fa-solid fa-file-circle-check text-4xl mb-2 text-slate-300 block"></i>
+                                    <p class="font-semibold text-slate-600 text-sm">Belum ada laporan perkembangan yang diterbitkan</p>
+                                    <p class="text-xs text-slate-400 mt-1">Laporan evaluasi membaca dan menulis ananda akan diterbitkan secara berkala oleh Ibu Pengajar di sini.</p>
+                                </div>
+                            @endif
+                        </div>
+
                     </div>
 
                 </div>

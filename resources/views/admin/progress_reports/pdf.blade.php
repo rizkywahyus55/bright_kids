@@ -35,11 +35,23 @@
 </head>
 <body class="py-8 px-4 sm:px-6">
 
+    @php
+        $regCode = $report->student?->registration?->registration_code 
+                   ?? $report->student?->registrations?->first()?->registration_code;
+        $isPublic = request()->routeIs('laporan.public-pdf') || !auth('admin')->check();
+    @endphp
+
     <!-- Top Action Bar (Hide when printing) -->
     <div class="max-w-3xl mx-auto mb-6 flex items-center justify-between no-print">
-        <a href="{{ route('admin.laporan-perkembangan.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm">
-            <i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Daftar Laporan
-        </a>
+        @if(!$isPublic && auth('admin')->check() && request()->routeIs('admin.*'))
+            <a href="{{ route('admin.laporan-perkembangan.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm">
+                <i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Panel Admin
+            </a>
+        @else
+            <a href="{{ $regCode ? route('pendaftaran.status', ['code' => $regCode]) : route('home') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold hover:bg-slate-50 transition-all shadow-sm">
+                <i class="fa-solid fa-arrow-left text-xs"></i> Kembali ke Status Murid
+            </a>
+        @endif
         <button onclick="window.print()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-bold shadow-md shadow-sky-600/20 transition-all">
             <i class="fa-solid fa-print"></i> Cetak Laporan / Simpan PDF
         </button>

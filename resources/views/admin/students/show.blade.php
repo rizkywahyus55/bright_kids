@@ -116,7 +116,12 @@
                 <div class="divide-y divide-slate-100">
                     @forelse($siswa->attendances->sortByDesc(fn($a) => $a->meeting?->meeting_date)->take(6) as $att)
                         <div class="flex items-center justify-between px-5 py-3 text-sm">
-                            <div class="text-slate-700">{{ $att->meeting?->meeting_date?->format('d M Y') ?? '-' }}</div>
+                            <div>
+                                <div class="font-semibold text-slate-800">{{ $att->meeting?->meeting_date ? \Carbon\Carbon::parse($att->meeting->meeting_date)->locale('id')->translatedFormat('d F Y') : '-' }}</div>
+                                @if($att->notes)
+                                    <div class="text-xs text-slate-500 italic mt-0.5"><i class="fa-regular fa-comment-dots mr-1 text-slate-400"></i>{{ $att->notes }}</div>
+                                @endif
+                            </div>
                             <div class="flex items-center gap-2">
                                 @if($att->status === 'hadir')
                                     <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold">Hadir</span>

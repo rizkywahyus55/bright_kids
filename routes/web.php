@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::post('/pendaftaran', [RegistrationController::class, 'store'])->name('pendaftaran.store');
 Route::get('/pendaftaran/status/{code?}', [RegistrationController::class, 'status'])->name('pendaftaran.status');
+Route::get('/laporan-perkembangan/{id}/cetak', [ProgressReportController::class, 'publicPdf'])->name('laporan.public-pdf');
 Route::post('/pembayaran/snap/{code}', [PaymentController::class, 'getSnapToken'])->name('pembayaran.snap');
 Route::post('/pembayaran/notification', [PaymentController::class, 'handleNotification'])->name('pembayaran.notification');
 

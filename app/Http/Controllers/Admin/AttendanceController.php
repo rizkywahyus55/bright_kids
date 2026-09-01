@@ -91,7 +91,7 @@ class AttendanceController extends Controller
         }
 
         return redirect()->route('admin.absensi.index')
-            ->with('success', 'Data absensi berhasil disimpan untuk ' . count($request->attendances) . ' siswa.');
+            ->with('success', 'Data absensi berhasil disimpan untuk ' . count($request->attendances) . ' murid.');
     }
 
     public function destroy(Meeting $absensi)
